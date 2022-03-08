@@ -4,7 +4,7 @@ punchline: \"charmap" and quick symbol picker
 description: |-
   Use control + . to quickly find a symbol, press enter and paste it.
 
-  Feedback: jdpepi@gmail.com or Xorus#7483 (must be in dalamud discord as my pm are only open there) 
+  Feedback: jdpepi@gmail.com or Xorus#7483 (must be in dalamud discord as my PM are only open there) 
 category_tags:
   - ui
-#repo_url: https://github.com/xorus/EngageTimer
+repo_url: https://github.com/xorus/SymbolPicker

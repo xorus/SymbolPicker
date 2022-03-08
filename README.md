@@ -4,7 +4,7 @@
 
 Testing repo : https://xorus.dev/xiv
 
-Or grap a build from the GitHub actions (if they work).
+Or grab a build from the GitHub actions (if they work).
 
 Use `control`+`.` to open the quick character picker.
 
@@ -17,13 +17,16 @@ ffxiv too.
 
 ## todo
 
+- the search input is not focused the first time you open it
 - unproper unload causes crashes?
+- left/right to navigate in search results (actually implemented but broken :( )
 - fix favourite not saving properly
 - auto-paste on click/enter
 - customize open shortcut
 - open main UI button in mini-search
 - ordering for favourites (drag and drop?)
 - better UI
+- build characters file in CI
 
 ## build
 

@@ -23,74 +23,46 @@ namespace SymbolPicker
     {
         private readonly Configuration _configuration;
 
-        private readonly TextureWrap _goatImage;
         private readonly KeyState _keyState;
-        private readonly SigScanner _sigScanner;
-        private readonly DalamudPluginInterface _dalamud;
-
-        // this extra bool exists for ImGui, since you can't ref a property
-        private bool _visible;
-
-        public bool Visible
-        {
-            get => _visible;
-            set => _visible = value;
-        }
 
         private bool _settingsVisible;
         private bool _charMapVisible;
+        private VirtualKey Modifier = VirtualKey.CONTROL;
+        private VirtualKey Key = VirtualKey.OEM_PERIOD;
+        private bool pressing = false;
+        private bool _listenForHotkey = true;
+        private SortedSymbols _symbols;
+        private bool _pickerVisible = false;
 
         public void OpenCharMap()
         {
             _charMapVisible = true;
         }
 
-        private VirtualKey Modifier = VirtualKey.CONTROL;
-        private VirtualKey Key = VirtualKey.OEM_PERIOD;
-        private bool pressing = false;
-
-        private bool _pickerVisible = false;
-
         // passing in the image here just for simplicity
-        public PluginUi(Configuration configuration, TextureWrap goatImage, KeyState keyState, SigScanner sigScanner,
-            DalamudPluginInterface _dalamud, SortedSymbols symbols)
+        public PluginUi(Configuration configuration, KeyState keyState, SortedSymbols symbols)
         {
             _configuration = configuration;
-            _goatImage = goatImage;
             _keyState = keyState;
-            _sigScanner = sigScanner;
-            this._dalamud = _dalamud;
             _symbols = symbols;
-
-            _inputSimulator = new InputSimulator();
+            // _inputSimulator = new InputSimulator();
             // _dalamud.UiBuilder.BuildFonts += BuildFont;
         }
 
         public void Dispose()
         {
-            _goatImage.Dispose();
-            // _dalamud.UiBuilder.BuildFonts -= BuildFont;
-            // _dalamud.UiBuilder.RebuildFonts();
         }
 
         public void Draw()
         {
-            // if (!_fontLoaded)
-            // {
-            //     _dalamud.UiBuilder.RebuildFonts();
-            //     return;
-            // }
-
             if (_deferredRemoveCharFromPalette != null)
             {
                 _configuration.Palette.Remove((char)_deferredRemoveCharFromPalette);
                 _deferredRemoveCharFromPalette = null;
             }
 
-            // DoPaste();
             QuickWindow();
             if (_charMapVisible) PickerWindow();
-            DrawSettingsWindow();
 
             if (_listenForHotkey && _keyState[Modifier] && _keyState[Key])
             {
@@ -104,56 +76,6 @@ namespace SymbolPicker
             }
 
             pressing = false;
-        }
-
-        private bool _listenForHotkey = true;
-        private bool _pasting = false;
-        private readonly InputSimulator _inputSimulator;
-        private double? _doPaste = null;
-        private bool _fontLoaded = false;
-        private SortedSymbols _symbols;
-
-        private void DoPaste()
-        {
-            if (_doPaste == null || !(ImGui.GetTime() - _doPaste > 1.2d)) return;
-            _inputSimulator.Keyboard.ModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.VK_V);
-            _doPaste = null;
-        }
-
-        private void Paste()
-        {
-            _doPaste = ImGui.GetTime();
-        }
-
-        private ImFontPtr _font;
-
-        /**
-         * UI font code adapted from ping plugin by karashiiro
-         * https://github.com/karashiiro/PingPlugin/blob/feex/PingPlugin/PingUI.cs
-         */
-        private void BuildFont()
-        {
-            try
-            {
-                unsafe
-                {
-                    ImFontConfigPtr fontConfig = ImGuiNative.ImFontConfig_ImFontConfig();
-                    fontConfig.MergeMode = true;
-                    fontConfig.PixelSnapH = true;
-
-                    var fontPathGame = Path.Combine(_dalamud.DalamudAssetDirectory.FullName, "UIRes", "gamesym.ttf");
-                    var gameRangeHandle = GCHandle.Alloc(new ushort[] { 0xE020, 0xE0DB, 0 }, GCHandleType.Pinned);
-                    _font = ImGui.GetIO().Fonts.AddFontFromFileTTF(fontPathGame, 32.0f, fontConfig,
-                        gameRangeHandle.AddrOfPinnedObject());
-                    fontConfig.Destroy();
-                    gameRangeHandle.Free();
-                    _fontLoaded = true;
-                }
-            }
-            catch (Exception e)
-            {
-                PluginLog.LogError(e.Message);
-            }
         }
 
         private char? _deferredRemoveCharFromPalette = null;
@@ -204,9 +126,6 @@ namespace SymbolPicker
             if (nextBtn < visibleX) ImGui.SameLine();
         }
 
-        private string _a = "";
-        private string _b = "";
-
         private void CopyPicker()
         {
             ImGui.SetWindowFocus(null);
@@ -215,12 +134,17 @@ namespace SymbolPicker
         }
 
         private bool _pickerWasDisplayed = false;
-
         private string _currentSearch = "";
         private string _lastConvertSource = "";
         private string _lastConvertResult = "";
         private int _currentSelected = 0;
         private SymbolChar[] _searchResults = Array.Empty<SymbolChar>();
+
+        private void HideQW()
+        {
+            ImGui.CaptureKeyboardFromApp(false);
+            _pickerVisible = false;
+        }
 
         private void QuickWindow()
         {
@@ -245,11 +169,11 @@ namespace SymbolPicker
                 {
                     var size = new Vector2(30, 30);
 
+                    ImGui.CaptureKeyboardFromApp(true);
+
                     if (_currentSelected >= _searchResults.Length) _currentSelected = _searchResults.Length - 1;
                     if (_currentSelected < 0) _currentSelected = 0;
 
-                    // ImGui.Text("" + _currentSelected);
-                    // ImGui.SameLine();
                     if (_searchResults.Length > 0)
                     {
                         var i = 0;
@@ -314,31 +238,13 @@ namespace SymbolPicker
                         });
                     }
 
-                    // ImGui.SetWindowFocus();
-                    // ImGui.SetItemDefaultFocus();
-                    // ImGui.SetItemDefaultFocus();
                     if (_pickerVisible && !_pickerWasDisplayed) ImGui.SetKeyboardFocusHere();
-
-
-                    /*
-                        ImGui.InputText("", ref _a, 50, ImGuiInputTextFlags.CallbackAlways, data =>
-                        {
-                            _b = Convert(_a, ConvertMode.Boxed);
-                            return 0;
-                        });
-                        */
-
                     ImGui.SameLine();
-                    // ImGui.PushFont(_font);
-                    if (_b.Length > 0 && ImGui.Button("" + _b))
-                    {
-                        CopyPicker();
-                        _pickerVisible = false;
-                    }
 
                     if (ImGui.IsKeyReleased((int)ImGuiKey.Escape))
                     {
-                        _pickerVisible = false;
+                        HideQW();
+                        PluginLog.Error("bruh");
                     }
 
                     if (ImGui.IsKeyReleased((int)ImGuiKey.UpArrow) || ImGui.IsKeyReleased((int)ImGuiKey.LeftArrow))
@@ -346,7 +252,8 @@ namespace SymbolPicker
                         _currentSelected--;
                     }
 
-                    if (ImGui.IsKeyReleased((int)ImGuiKey.DownArrow) || ImGui.IsKeyReleased((int)ImGuiKey.RightArrow))
+                    if (ImGui.IsKeyReleased((int)ImGuiKey.Tab) || ImGui.IsKeyReleased((int)ImGuiKey.DownArrow) ||
+                        ImGui.IsKeyReleased((int)ImGuiKey.RightArrow))
                     {
                         _currentSelected++;
                     }
@@ -354,7 +261,7 @@ namespace SymbolPicker
                     if (ImGui.IsKeyReleased((int)ImGuiKey.Enter))
                     {
                         CopyPicker();
-                        _pickerVisible = false;
+                        HideQW();
                     }
                     // if ((_keyState[VirtualKey.CONTROL] && _keyState[VirtualKey.C]) || (_keyState[VirtualKey.RETURN]))
                     // {
@@ -362,10 +269,8 @@ namespace SymbolPicker
                     //     _pickerVisible = false;
                     // }
 
-                    if (!ImGui.IsWindowFocused()) _pickerVisible = false;
-
-                    // ImGui.PopFont();
                     _pickerWasDisplayed = true;
+                    if (!ImGui.IsWindowFocused()) HideQW();
                 }
                 else _pickerWasDisplayed = false;
 
@@ -446,37 +351,6 @@ namespace SymbolPicker
 
                 ImGui.PopStyleVar();
                 ImGui.NewLine();
-
-                ImGui.Text("todo in priority order:");
-                ImGui.Text("- unproper unload causes crashes?");
-                ImGui.Text("- fix favourite not saving properly");
-                ImGui.Text("- auto-paste on click/enter");
-                ImGui.Text("- customize open shortcut");
-                ImGui.Text("- open main UI button in mini-search");
-                ImGui.Text("- ordering for favourites (drag and drop?)");
-                ImGui.Text("- better UI");
-            }
-
-            ImGui.End();
-        }
-
-
-        public void DrawSettingsWindow()
-        {
-            return;
-            ImGui.SetNextWindowSize(new Vector2(232, 75), ImGuiCond.Always);
-            if (ImGui.Begin("A Wonderful Configuration Window", ref _settingsVisible,
-                    ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar |
-                    ImGuiWindowFlags.NoScrollWithMouse))
-            {
-                // can't ref a property, so use a local copy
-                var configValue = _configuration.SomePropertyToBeSavedAndWithADefault;
-                if (ImGui.Checkbox("Random Config Bool", ref configValue))
-                {
-                    _configuration.SomePropertyToBeSavedAndWithADefault = configValue;
-                    // can save immediately on change, if you don't want to provide a "Save and Close" button
-                    _configuration.Save();
-                }
             }
 
             ImGui.End();

@@ -13,8 +13,7 @@ namespace SymbolPicker
     {
         public string Name => "Symbol Picker";
 
-        private const string pickerCommand = "/charmap";
-        private const string settingsCommand = "/pmycommand";
+        private const string PickerCommand = "/charmap";
 
         private DalamudPluginInterface PluginInterface { get; init; }
         private CommandManager CommandManager { get; init; }
@@ -34,17 +33,13 @@ namespace SymbolPicker
             Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             Configuration.Initialize(PluginInterface);
 
-            // you might normally want to embed resources and load them from the manifest stream
-            var imagePath = Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, "goat.png");
-            var goatImage = PluginInterface.UiBuilder.LoadImage(imagePath);
-
             var symbols = new SortedSymbols();
-            PluginUi = new PluginUi(Configuration, goatImage, ks, scanner, pluginInterface, symbols);
+            PluginUi = new PluginUi(Configuration, ks, symbols);
             // fw.Update += (_) => PluginUi.update();
 
-            CommandManager.AddHandler(pickerCommand, new CommandInfo(OnCommand)
+            CommandManager.AddHandler(PickerCommand, new CommandInfo(OnCommand)
             {
-                HelpMessage = "A useful message to display in /xlhelp"
+                HelpMessage = "A (very) useful message to display in /xlhelp"
             });
 
             PluginInterface.UiBuilder.Draw += DrawUi;
@@ -54,13 +49,12 @@ namespace SymbolPicker
         public void Dispose()
         {
             PluginUi.Dispose();
-            CommandManager.RemoveHandler(pickerCommand);
+            CommandManager.RemoveHandler(PickerCommand);
         }
 
         private void OnCommand(string command, string args)
         {
-            // in response to the slash command, just display our main ui
-            PluginUi.Visible = true;
+            PluginUi.OpenCharMap();
         }
 
         private void DrawUi()

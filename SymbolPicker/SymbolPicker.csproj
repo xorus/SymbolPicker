@@ -30,7 +30,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="DalamudPackager" Version="2.1.5" />
+        <PackageReference Include="DalamudPackager" Version="2.1.7" />
         <PackageReference Include="InputSimulatorStandard" Version="1.0.0" />
         <PackageReference Include="TextCopy" Version="6.1.0" />
         <Reference Include="FFXIVClientStructs">

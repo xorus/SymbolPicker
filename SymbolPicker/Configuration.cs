@@ -1,8 +1,8 @@
-﻿using Dalamud.Configuration;
-using Dalamud.Plugin;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using Dalamud.Game.Text;
+using Dalamud.Configuration;
+using Dalamud.Game.ClientState.Keys;
+using Dalamud.Plugin;
 
 namespace SymbolPicker
 {
@@ -10,23 +10,26 @@ namespace SymbolPicker
     public class Configuration : IPluginConfiguration
     {
         public int Version { get; set; } = 0;
+        public VirtualKey PickerModifier = VirtualKey.CONTROL;
+        public VirtualKey PickerKey = VirtualKey.OEM_PERIOD;
 
         public List<char> Palette { get; set; } = new()
         {
             // (char)SeIconChar.
         };
 
-        [NonSerialized]
-        private DalamudPluginInterface? pluginInterface;
+        [NonSerialized] private DalamudPluginInterface? _pluginInterface;
+
+        [NonSerialized] public char? ScheduledPaletteRemoval = null;
 
         public void Initialize(DalamudPluginInterface pluginInterface)
         {
-            this.pluginInterface = pluginInterface;
+            _pluginInterface = pluginInterface;
         }
 
         public void Save()
         {
-            this.pluginInterface!.SavePluginConfig(this);
+            _pluginInterface!.SavePluginConfig(this);
         }
     }
 }

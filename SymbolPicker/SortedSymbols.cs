@@ -14,8 +14,8 @@ public sealed class SortedSymbols
 {
     public class Category
     {
-        public string Label { init; get; }
-        public SymbolChar[]? Chars { get; set; } = null;
+        public string Label { init; get; } = "";
+        public SymbolChar[]? Chars { get; init; } = null;
     }
 
     public List<Category> Symbols { get; } = new();

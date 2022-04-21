@@ -1,24 +1,49 @@
 # Symbol Picker
 
-***THIS IS A VERY EARLY TEST PROJECT, IT MIGHT ACTUALLY RE-CONSTRUCT DALAMUD AND BRING IT DOWN UPON OUR VERY EARTH.***
+***THIS IS A VERY EARLY TEST PROJECT, IT MIGHT ACTUALLY RE-CONSTRUCT DALAMUD AND BRING IT DOWN UPON OUR VERY EARTH.*** (
+aka CTD)
 
 Testing repo : https://xorus.dev/xiv
 
 Or grab a build from the GitHub actions (if they work).
 
-Use `control`+`.` to open the quick character picker.
+## Usage
 
-Use the `/charmap` command to open the character list.
+![](Doc/bad-demo.gif)
+
+- `control`+`.` opens the quick character picker.
+    1. type in the name of the character you want to use
+    2. press enter to copy to clipboard
+    3. `control`-`v` into the text-box you were typing
+- `/pcharmap` opens the character list.
+
+### Character buttons
+
+- Left click copies it to the clipboard
+- Right click adds it to the quick palette / favourites.
+
+### Convert to boxed
+
+Prefixing text in the quick box by `!` will convert the letters to boxed style :
+![](Doc/boxed.png)
 
 ## why
 
 I once did `win`+`.` and it opened an emoji picker on Windows, and I was like WOAAA so I made it so I could go WOAAA in
-ffxiv too.
+FFXIV too.
+
+Also finding characters for macros SUCKS.
+
+## broken things
+
+- Only works with the AXIS font.
+- The quick search box does not take focus the first time you open it.
+- unproper unload causes crashes?
+- it's a proof of concept
 
 ## todo
 
 - the search input is not focused the first time you open it
-- unproper unload causes crashes?
 - left/right to navigate in search results (actually implemented but broken :( )
 - fix favourite not saving properly
 - auto-paste on click/enter

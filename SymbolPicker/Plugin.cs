@@ -1,11 +1,8 @@
-﻿using Dalamud.Game.Command;
+﻿using Dalamud.Game;
+using Dalamud.Game.ClientState.Keys;
+using Dalamud.Game.Command;
 using Dalamud.IoC;
 using Dalamud.Plugin;
-using System.IO;
-using System.Reflection;
-using Dalamud.Game;
-using Dalamud.Game.ClientState;
-using Dalamud.Game.ClientState.Keys;
 
 namespace SymbolPicker
 {
@@ -13,12 +10,14 @@ namespace SymbolPicker
     {
         public string Name => "Symbol Picker";
 
-        private const string PickerCommand = "/charmap";
+        private const string PickerCommand = "/pcharmap";
 
         private DalamudPluginInterface PluginInterface { get; init; }
         private CommandManager CommandManager { get; init; }
         private Configuration Configuration { get; init; }
         private PluginUi PluginUi { get; init; }
+        
+        // public delegate IntPtr TestDelegate(IntPtr)
 
         public Plugin(
             [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,

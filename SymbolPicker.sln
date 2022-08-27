@@ -4,9 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SymbolPicker", "SymbolPicker\SymbolPicker.csproj", "{13C812E9-0D42-4B95-8646-40EEBF30636F}"
-	ProjectSection(ProjectDependencies) = postProject
-		{1FBE73D9-0771-4C2B-AE8B-9E79A937AFE2} = {1FBE73D9-0771-4C2B-AE8B-9E79A937AFE2}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildChars", "BuildChars\BuildChars.csproj", "{1FBE73D9-0771-4C2B-AE8B-9E79A937AFE2}"
 EndProject

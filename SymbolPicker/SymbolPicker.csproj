@@ -1,25 +1,44 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <Authors></Authors>
-        <Company></Company>
-        <Version>0.0.2.0</Version>
-        <Description>A sample plugin.</Description>
-        <Copyright></Copyright>
-        <PackageProjectUrl></PackageProjectUrl>
-    </PropertyGroup>
-
-    <PropertyGroup>
-        <TargetFramework>net5.0-windows</TargetFramework>
-        <Platforms>x64</Platforms>
+        <TargetFramework>net6.0-windows</TargetFramework>
+        <PlatformTarget>x64</PlatformTarget>
+        <Platforms>AnyCPU</Platforms>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-        <!--    <OutputPath>$(AppData)\XIVLauncher\devPlugins\SymbolPicker\</OutputPath>-->
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+        <IsPackable>false</IsPackable>
+        <Configurations>Debug;Release</Configurations>
+        <Deterministic>false</Deterministic>
     </PropertyGroup>
+
+    <ProjectExtensions>
+        <DalamudPlugin>
+            <ApiLevel>7</ApiLevel>
+            <Author>Xorus</Author>
+            <Name>SymbolPicker (EXPERIMENTAL)</Name>
+            <Punchline>"charmap" and quick symbol picker</Punchline>
+            <Description>
+                Use control + . to quickly find a symbol, press enter and paste it.
+
+                Feedback: jdpepi@gmail.com or Xorus#7483 (must be in dalamud discord as my PM are only open there)
+            </Description>
+            <IconUrl>https://raw.githubusercontent.com/xorus/SymbolPicker/main/SymbolPicker/images/icon.png</IconUrl>
+            <Tags>
+                <Tag>Symbols</Tag>
+                <Tag>Characters</Tag>
+                <Tag>Quick</Tag>
+            </Tags>
+            <Hidden>False</Hidden>
+            <CategoryTags>ui</CategoryTags>
+            <RepositoryUrl>https://github.com/xorus/SymbolPicker</RepositoryUrl>
+        </DalamudPlugin>
+    </ProjectExtensions>
     
     <ItemGroup>
         <EmbeddedResource Include="..\Data\characters.json" />
@@ -30,27 +49,32 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="DalamudPackager" Version="2.1.7" />
+        <PackageReference Include="DalamudPackager" Version="2.1.8" />
         <PackageReference Include="InputSimulatorStandard" Version="1.0.0" />
+        <PackageReference Include="JetBrains.Annotations" Version="2022.1.0" />
         <PackageReference Include="TextCopy" Version="6.1.0" />
-        <Reference Include="FFXIVClientStructs">
+        <Reference Include="Dalamud, Culture=neutral, PublicKeyToken=null">
+            <HintPath>$(DalamudLibPath)Dalamud.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="FFXIVClientStructs, Culture=neutral, PublicKeyToken=null">
             <HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>
             <Private>false</Private>
         </Reference>
-        <Reference Include="Newtonsoft.Json">
-            <HintPath>$(DalamudLibPath)Newtonsoft.Json.dll</HintPath>
-            <Private>false</Private>
-        </Reference>
-        <Reference Include="Dalamud">
-            <HintPath>$(DalamudLibPath)Dalamud.dll</HintPath>
-            <Private>false</Private>
-        </Reference>
-        <Reference Include="ImGui.NET">
+        <Reference Include="ImGui.NET, Culture=neutral, PublicKeyToken=null">
             <HintPath>$(DalamudLibPath)ImGui.NET.dll</HintPath>
             <Private>false</Private>
         </Reference>
-        <Reference Include="ImGuiScene">
+        <Reference Include="ImGuiScene, Culture=neutral, PublicKeyToken=null">
             <HintPath>$(DalamudLibPath)ImGuiScene.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="Newtonsoft.Json, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+            <HintPath>$(DalamudLibPath)Newtonsoft.Json.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="StbiSharp, Culture=neutral, PublicKeyToken=null">
+            <HintPath>$(DalamudLibPath)StbiSharp.dll</HintPath>
             <Private>false</Private>
         </Reference>
         <Reference Include="Lumina">
@@ -62,4 +86,8 @@
             <Private>false</Private>
         </Reference>
     </ItemGroup>
+
+    <Target Name="PackagePlugin" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
+        <DalamudPackager ProjectDir="$(ProjectDir)" OutputPath="$(OutputPath)" AssemblyName="$(AssemblyName)" />
+    </Target>
 </Project>

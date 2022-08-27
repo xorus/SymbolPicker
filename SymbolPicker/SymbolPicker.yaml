@@ -1,8 +1,15 @@
-name: Symbol Picker (EXPERIMENTAL - MIGHT EXPLODE)
+name: FancySymbols (EXPERIMENTAL - MIGHT EXPLODE)
 author: Xorus
 punchline: \"charmap" and quick symbol picker
 description: |-
   Use control + . to quickly find a symbol, press enter and paste it.
+  
+  to-do:
+  
+  - better ui
+  - playground textbox for making macros
+  - actually insert the character instead of copying it
+  - find out why focus is buggy
 
   Feedback: jdpepi@gmail.com or Xorus#7483 (must be in dalamud discord as my PM are only open there) 
 category_tags:

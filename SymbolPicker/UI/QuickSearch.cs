@@ -72,7 +72,7 @@ public class QuickSearch
             {
                 var size = new Vector2(30, 30);
 
-                ImGui.CaptureKeyboardFromApp(true);
+                ImGui.SetNextFrameWantCaptureKeyboard(true);
 
                 // must be done after the first init
                 if (_ensureFocus)
@@ -153,24 +153,24 @@ public class QuickSearch
                         }
                 }
 
-                if (ImGui.IsKeyReleased((int)ImGuiKey.Escape))
+                if (ImGui.IsKeyReleased(ImGuiKey.Escape))
                 {
                     Hide();
                     PluginLog.Error("bruh");
                 }
 
-                if (ImGui.IsKeyReleased((int)ImGuiKey.UpArrow) || ImGui.IsKeyReleased((int)ImGuiKey.LeftArrow))
+                if (ImGui.IsKeyReleased(ImGuiKey.UpArrow) || ImGui.IsKeyReleased(ImGuiKey.LeftArrow))
                 {
                     _currentSelected--;
                 }
 
-                if (ImGui.IsKeyReleased((int)ImGuiKey.Tab) || ImGui.IsKeyReleased((int)ImGuiKey.DownArrow) ||
-                    ImGui.IsKeyReleased((int)ImGuiKey.RightArrow))
+                if (ImGui.IsKeyReleased(ImGuiKey.Tab) || ImGui.IsKeyReleased(ImGuiKey.DownArrow) ||
+                    ImGui.IsKeyReleased(ImGuiKey.RightArrow))
                 {
                     _currentSelected++;
                 }
 
-                if (ImGui.IsKeyReleased((int)ImGuiKey.Enter))
+                if (ImGui.IsKeyReleased(ImGuiKey.Enter))
                 {
                     CopyPicker();
                     Hide();
@@ -193,7 +193,7 @@ public class QuickSearch
 
     private void Hide()
     {
-        ImGui.CaptureKeyboardFromApp(false);
+        ImGui.SetNextFrameWantCaptureKeyboard(false);
         _pickerVisible = false;
     }
 

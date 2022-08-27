@@ -1,6 +1,7 @@
 ﻿using Dalamud.Game;
 using Dalamud.Game.ClientState.Keys;
 using Dalamud.Game.Command;
+using Dalamud.Interface.Windowing;
 using Dalamud.IoC;
 using Dalamud.Plugin;
 
@@ -8,7 +9,7 @@ namespace SymbolPicker
 {
     public sealed class Plugin : IDalamudPlugin
     {
-        public string Name => "Symbol Picker";
+        public string Name => "FancySymbols";
 
         private const string PickerCommand = "/pcharmap";
 
@@ -16,6 +17,8 @@ namespace SymbolPicker
         private CommandManager CommandManager { get; init; }
         private Configuration Configuration { get; init; }
         private PluginUi PluginUi { get; init; }
+
+        private WindowSystem WindowSystem { get; init; }
         
         // public delegate IntPtr TestDelegate(IntPtr)
 
@@ -28,6 +31,7 @@ namespace SymbolPicker
             PluginInterface = pluginInterface;
             CommandManager = commandManager;
 
+            // WindowSystem = new WindowSystem(Name);
 
             Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             Configuration.Initialize(PluginInterface);

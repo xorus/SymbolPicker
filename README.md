@@ -1,11 +1,19 @@
 # Symbol Picker
 
-***THIS IS A VERY EARLY TEST PROJECT, IT MIGHT ACTUALLY RE-CONSTRUCT DALAMUD AND BRING IT DOWN UPON OUR VERY EARTH.*** (
-aka CTD)
-
-Testing repo : https://xorus.dev/xiv
+Testing repo : https://plogon.xorus.dev/
 
 Or grab a build from the GitHub actions (if they work).
+
+### To-do list before submitting to testing repo
+
+This plugin is in line with Dalamud plugin rules and will be submitted to the testing repository when these items are done :
+
+- [ ] Find a way to paste / insert character into the game:
+  1. In-game textbox
+  2. ImGui textbox
+  3. If nothing is focused, copy to clipboard
+- [ ] Copy notification / feedback UI
+- [ ] Fix UI as described in todo section
 
 ## Usage
 
